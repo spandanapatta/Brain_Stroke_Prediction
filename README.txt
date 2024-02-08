@@ -27,4 +27,4 @@ ATTRIBUTES:
 
 ALGORITHMS:
 
-	Among KNN, Logistic Regression, Decision Tree, and Random Forest models, Logistic Regression achieved the highest accuracy, making it the most effective model for the given dataset.
+	Among KNN, Logistic Regression, Decision Tree, and Random Forest models, Random Forest achieved the highest accuracy of 98%, making it the most effective model for the given dataset.
