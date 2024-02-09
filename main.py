@@ -9,7 +9,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-model = joblib.load('rf_model.joblib')
+model = joblib.load('rf_clf.joblib')
 scaler = joblib.load('scaler.joblib')
 
 tabs = ["Home", "Prediction", "Precautions"]
@@ -24,15 +24,12 @@ if page == "Prediction":
         "<h2 style='text-align:center;'>Personal Information</h2>",
         unsafe_allow_html=True,
     )
-    gender_ = st.radio("**Gender**", ["Female", "Male"], horizontal=True)
     age_ = st.slider("**Age**", 0, 100)
+    married_ = st.radio("**Marital Status**", ["Yes", "No"], horizontal=True)
+
 
     st.markdown(
         "<h2 style='text-align:center;'>Health Information</h2>", unsafe_allow_html=True
-    )
-    smoking_ = st.radio(
-        "**What is your smoking status?**",
-        ["Smoker", "Formerly smoker", "Never smoked", "Unknown"], horizontal=True
     )
 
     if st.checkbox("**Don't Know BMI?**"):
@@ -64,24 +61,23 @@ if page == "Prediction":
             progress_bar.progress(perc_completed + 1)
         info.empty()
         cols = [
-            "gender",
             "age",
             "hypertension",
             "heart_disease",
+            "ever_married",
             "avg_glucose_level",
             "bmi",
-            "smoking_status"
+            
         ]
 
         row = np.array(
             [
-                gender_,
                 age_,
                 hypertension_,
                 heart_,
+                married_,
                 glucose_level_,
                 bmi_,
-                smoking_,
             ]
         )
         X = pd.DataFrame(data=[row], columns=cols)
@@ -89,23 +85,12 @@ if page == "Prediction":
         X["avg_glucose_level"] = X["avg_glucose_level"].astype("float")
         X["bmi"] = X["bmi"].astype("float")
 
-        X["gender"] = [1 if i == "Male" else 0 for i in X["gender"]]
+        X["ever_married"] = [1 if i == "Yes" else 0 for i in X["ever_married"]]
         X["hypertension"] = [1 if i == "Yes" else 0 for i in X["hypertension"]]
         X["heart_disease"] = [1 if i == "Yes" else 0 for i in X["heart_disease"]]
 
-        # Corrected handling of smoking_status
-        X['smoking_status'] = np.select(
-            [
-                X['smoking_status'] == 'Never smoked',
-                X['smoking_status'] == 'Unknown',
-                X['smoking_status'] == 'Formerly smoker',
-                X['smoking_status'] == 'Smoker'
-            ],
-            [2, 0, 1, 3],
-            default=0
-        )
 
-        X[['bmi', 'avg_glucose_level', 'age']] = scaler.transform(X[['bmi', 'avg_glucose_level', 'age']])
+        X = scaler.transform(X)
 
         prediction = model.predict(X)
 
