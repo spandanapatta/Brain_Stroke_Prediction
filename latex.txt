@@ -1,0 +1,183 @@
+\documentclass{beamer}
+\usepackage{xcolor}
+
+\definecolor{lightyellow}{RGB}{255, 255, 153}
+
+%Themes
+\mode<presentation>
+{
+  \usetheme{Darmstadt} % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{serif} % or try serif, structurebold, ...
+} 
+
+% Packages
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% Title Page
+\title[\textbf]{Batch 13 - BRAIN STROKE PREDICTION}
+\institute{\large Shri Vishnu Engineering College For Women}
+\author[SVECW]{ \textbf{P.Spandana: 21B01A05D8 : CSE
+            \\  P.Tapaswi : 21B01A05E3 : CSE
+            \\ R.Poojitha : 21B01A05F6 : CSE
+            \\ T.Mukunda Priya : 21B01A05H6 : CSE
+            \\ V.R.B.S.Usha : 21B01A05I8 : CSE}}
+\date{\today}
+\usefonttheme{serif}
+\usepackage{bookman}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usecolortheme{orchid}
+\beamertemplateballitem
+% Begin Document
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents 
+  \section{Introduction}
+  \section {Problem Statement}
+  \section{Dataset Description}
+  \section{Model Selection}
+  \section{Evaluation Metrics}
+  \section{Results}
+  \section{Demo screenshots}
+  \section{User interface screenshots}
+  \section{Conclusion}
+\end{frame}
+
+% Slide 0: Introduction
+\begin{frame}
+\frametitle{\LARGE INTRODUCTION}
+  \begin{itemize}
+    \item\Large Brain stroke prediction is crucial for early intervention and prevention.
+    \item Machine learning models offer a promising approach for stroke risk assessment.
+    \item This presentation discusses our work on developing a predictive model for brain stroke.
+  \end{itemize}
+\end{frame}
+
+% Slide 1: ProblemStatement
+\begin{frame}
+\frametitle{\LARGE ProblemStatement}
+  \begin{itemize}
+    \item\Large The problem at hand is to develop a robust and accurate predictive model that can identify individuals who are at a higher risk of experiencing a brain stroke. This predictive model should be capable of leveraging a diverse set of demographic, clinical, and to provide personalized risk assessments.
+  \end{itemize}
+\end{frame}
+
+% Slide 2: Dataset Description
+\begin{frame}
+\frametitle{\LARGE DATASET DESCRIPTION}
+  \begin{itemize}
+    \item\Large Our dataset includes demographic, clinical features.
+    \item Features such as age, glucoselevel, hypertension, smoking habits, etc., are included.
+    \item The dataset also contains information on stroke occurrence (binary target variable).
+  \end{itemize}
+\end{frame}
+
+% Slide 3: Model Selection
+\begin{frame}
+\frametitle{\LARGE MODEL SELECTION}
+  \begin{itemize}
+    \item\Large We experimented with several machine learning models, including Logistic Regression, SVM, KNN, DecisionTree and RandomForest .
+    \item RandomForest showed promising performance in terms of accuracy.
+    \item Decision Tree and KNN showed relatively lower accuracy compared to RandomForest.
+  \end{itemize}
+\end{frame}
+
+% Slide 4: Evaluation Metrics
+\begin{frame}
+\frametitle{\LARGE EVALUATION METRICS}
+  \begin{itemize}
+    \item\Large We used various evaluation metrics to assess model performance:
+    \begin{itemize}
+      \item\Large Accuracy
+      \item Confusion Matrix
+      
+    \end{itemize}
+    \item These metrics helped us understand the strengths and weaknesses of each model.
+  \end{itemize}
+\end{frame}
+
+% Slide 5: Results
+\begin{frame}
+\frametitle{\LARGE RESULTS}
+  \begin{itemize}
+    \item\Large Our results indicate that RandomForest perform well in predicting brain strokes, indicating its effectiveness in correctly predicting stroke occurrences
+    \item \textbf{ACCURACY}: RandomForest gives an accuracy of 99\%.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Demo/Screenshots}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{Output.jpeg}
+    \caption{Training the Model using Random Forest Algorithm and checking Accuracy}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Demo/Screenshots}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{Output1.jpeg}
+    \caption{Trying to optimize the Model using XGBoost Algorithm and checking Accuracy}
+\end{figure}
+\end{frame}
+
+\begin{frame}{User Interface}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{ui1.jpeg}
+    \caption{Home page }
+\end{figure}
+\end{frame}
+
+\begin{frame}{User Interface}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{ui2.jpeg}
+    \caption{Precautions page }
+\end{figure}
+\end{frame}
+
+\begin{frame}{User Interface}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{ui3.jpeg}
+    \caption{User input page }
+\end{figure}
+\end{frame}
+
+\begin{frame}{User Interface}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=11cm]{ui4.jpeg}
+    \caption{User input page and Prediction }
+\end{figure}
+\end{frame}
+
+% Slide 6: Conclusion
+\begin{frame}
+\frametitle{\LARGE CONCLUSION}
+  \begin{itemize}
+    \item\Large Early prediction of brain strokes is vital for preventive healthcare.
+    \item Machine learning models, particularly KNN, RandomForest shows effective tools for stroke risk assessment.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\LARGE BIBILIOGRAPHY}
+  \begin{itemize}
+    \item Dataset link : https://www.kaggle.com/datasets/zzettrkalpakbal/full-filled-brain-stroke-dataset
+    \item Streamlit documentation for user interface : https://docs.streamlit.io
+    \item ChatGPT
+    \item StackOverFlow
+  \end{itemize}
+\end{frame}
+
+% End Document
+\end{document}
