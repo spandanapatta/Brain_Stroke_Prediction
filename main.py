@@ -1,12 +1,16 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 import time
+import pickle
+import joblib
 import warnings
-
 
 warnings.filterwarnings("ignore")
 
+model = joblib.load('rf_model.joblib')
+scaler = joblib.load('scaler.joblib')
 
 tabs = ["Home", "Prediction", "Precautions"]
 page = st.sidebar.radio("Tabs", tabs)
@@ -20,89 +24,97 @@ if page == "Prediction":
         "<h2 style='text-align:center;'>Personal Information</h2>",
         unsafe_allow_html=True,
     )
-    gender_ = st.radio("Gender", ["Female", "Male"], horizontal=True)
-    age_ = st.slider("Age", 0, 100)
+    gender_ = st.radio("**Gender**", ["Female", "Male"], horizontal=True)
+    age_ = st.slider("**Age**", 0, 100)
 
     st.markdown(
         "<h2 style='text-align:center;'>Health Information</h2>", unsafe_allow_html=True
     )
     smoking_ = st.radio(
-        "What is your smoking status?",
+        "**What is your smoking status?**",
         ["Smoker", "Formerly smoker", "Never smoked", "Unknown"], horizontal=True
     )
 
-    if st.checkbox("Dont Know BMI?"):
+    if st.checkbox("**Don't Know BMI?**"):
         height = st.slider(
-            "Enter User's Height in cm", value=200.0, step=1.0, format="%.2f"
+            "*Enter User's Height in cm*", value=200.0, step=1.0, format="%.2f"
         )
         weight = st.slider(
-            "Enter User's Weight in kgs", value=200.0, step=1.0, format="%.2f"
+            "*Enter User's Weight in kgs*", value=200.0, step=1.0, format="%.2f"
         )
         bmi_ = weight / (height / 100) ** 2
-        st.write(f"BMI of user is {bmi_} and will be autoupdated")
+        st.write(f"BMI of user is {bmi_} and will be auto-updated")
     else:
         bmi_ = st.slider(
-            "Enter User's BMI", min_value=10.0, max_value=50.0, step=0.01, format="%.2f"
+            "**Enter User's BMI**", min_value=10.0, max_value=50.0, step=0.01, format="%.2f"
         )
 
     glucose_level_ = st.slider(
-        "Glucose Level(eAG)", min_value=50.0, max_value=300.0, step=1.0, format="%.2f"
+        "**Glucose Level(eAG)**", min_value=50.0, max_value=300.0, step=1.0, format="%.2f"
     )
-    heart_ = st.radio("Do you have heart disease?", ["Yes", "No"], horizontal=True)
-    hypertension_ = st.radio("Do you have hypertension?", ["Yes", "No"], horizontal=True)
+    heart_ = st.radio("**Do you have heart disease?**", ["Yes", "No"], horizontal=True)
+    hypertension_ = st.radio("**Do you have hypertension?**", ["Yes", "No"], horizontal=True)
     button = st.button("Predict")
 
-    cols = [
-        "gender",
-        "age",
-        "hypertension",
-        "heart_disease",
-        "bmi",
-        "avg_glucose_level",
-        "smoking_status",
-    ]
-
-    row = np.array(
-        [
-            gender_,
-            age_,
-            hypertension_,
-            heart_,
-            bmi_,
-            glucose_level_,
-            smoking_,
+    if button == True:
+        info = st.info("Please wait, prediction is in progress:hourglass:")
+        progress_bar = st.progress(0)
+        for perc_completed in range(100):
+            time.sleep(0.05)
+            progress_bar.progress(perc_completed + 1)
+        info.empty()
+        cols = [
+            "gender",
+            "age",
+            "hypertension",
+            "heart_disease",
+            "avg_glucose_level",
+            "bmi",
+            "smoking_status"
         ]
-    )
-    X = pd.DataFrame(data=[row], columns=cols)
-    X["age"] = X["age"].astype("float")
-    X["avg_glucose_level"] = X["avg_glucose_level"].astype("float")
-    X["bmi"] = X["bmi"].astype("float")
 
-    X["gender"] = [1 if i == "Male" else 0 for i in X["gender"]]
-    X["hypertension"] = [1 if i == "Yes" else 0 for i in X["hypertension"]]
-    X["heart_disease"] = [1 if i == "Yes" else 0 for i in X["heart_disease"]]
+        row = np.array(
+            [
+                gender_,
+                age_,
+                hypertension_,
+                heart_,
+                glucose_level_,
+                bmi_,
+                smoking_,
+            ]
+        )
+        X = pd.DataFrame(data=[row], columns=cols)
+        X["age"] = X["age"].astype("float")
+        X["avg_glucose_level"] = X["avg_glucose_level"].astype("float")
+        X["bmi"] = X["bmi"].astype("float")
 
+        X["gender"] = [1 if i == "Male" else 0 for i in X["gender"]]
+        X["hypertension"] = [1 if i == "Yes" else 0 for i in X["hypertension"]]
+        X["heart_disease"] = [1 if i == "Yes" else 0 for i in X["heart_disease"]]
 
-    if [X["smoking_status"] == "Formerly smoker"]:
-        X["smoking_status_formerly_smoker"] = 1
-        X["smoking_status_never_smoked"] = 0
-        X["smoking_status_smokes"] = 0
-        X.drop(columns="smoking_status", inplace=True)
+        # Corrected handling of smoking_status
+        X['smoking_status'] = np.select(
+            [
+                X['smoking_status'] == 'Never smoked',
+                X['smoking_status'] == 'Unknown',
+                X['smoking_status'] == 'Formerly smoker',
+                X['smoking_status'] == 'Smoker'
+            ],
+            [2, 0, 1, 3],
+            default=0
+        )
 
-    elif [X["smoking_status"] == "Smoker"]:
-        X["smoking_status_formerly_smoker"] = 0
-        X["smoking_status_never_smoked"] = 0
-        X["smoking_status_smokes"] = 1
-        X.drop(columns="smoking_status", inplace=True)
+        X[['bmi', 'avg_glucose_level', 'age']] = scaler.transform(X[['bmi', 'avg_glucose_level', 'age']])
 
-    elif [X["smoking_status"] == "Never smoked"]:
-        X["smoking_status_formerly_smoker"] = 0
-        X["smoking_status_never_smoked"] = 1
-        X["smoking_status_smoker"] = 0
-        X.drop(columns="smoking_status", inplace=True)
+        prediction = model.predict(X)
+
+        if prediction == 1:
+            st.error("You have higher chances of having a stroke:disappointed:")
+        else:
+            st.success("You have lower chances of having a stroke🥳")
 
 if page == "Precautions":
-
     st.title("Precautions for Brain Stroke")
     st.markdown("""
             Brain stroke is a serious medical condition that requires immediate attention. 
